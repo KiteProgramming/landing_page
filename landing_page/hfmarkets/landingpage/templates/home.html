@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block scripts %}
+  {{ block.super }}  
+  <script>
+      $(document).ready(function() {
+          $('.select2').select2({
+              // You can use AJAX here to dynamically get the list of countries
+              // For example:
+              ajax: {
+                  url: 'https://restcountries.com/v3.1/all',
+                  processResults: function (data) {
+                      return {
+                          results: $.map(data, function(item) {                          
+                            var countryCode = (item.idd && item.idd.root && Array.isArray(item.idd.suffixes) && item.idd.suffixes.length > 0) 
+                                        ? item.idd.root + item.idd.suffixes[0] : "";                         
+                              return {
+                                  text: item.name.common,
+                                  id: countryCode
+                              }
+                          })
+                      };
+                  },                
+              },
+              minimumResultsForSearch: Infinity            
+          });
+
+          // Event handler for when a country is selected
+          $('#country').on('select2:select', function (e) {            
+              var data = e.params.data;            
+              $('#country_code').val(data.id); // Update the country code input with the selected country's dialing code
+          });
+      });
+  </script>
+{% endblock scripts %}
+
+{% block content %}
+  <!-- Main content of the landing page -->
+  <header class="bg-dark py-3 text-center">
+      <div class="container">
+          <img src="{% static 'images/HFLOGO.png' %}" alt="HotForex Logo" class="img-fluid mb-4">
+      </div>
+  </header>
+  <br>
+  <br>
+  <body class="d-flex flex-column min-vh-100">          
+    <div class="container">    
+      <!-- Registration form -->
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          {% if messages %}
+          <div class="container mt-3">
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-danger text-center" role="alert">
+                  <strong>{{ message }}</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              {% endfor %}
+          </div>
+          {% endif %}
+
+          <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <!-- Input fields -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" required pattern="[A-Za-zÀ-ž\s]+" title="First name should not contain special characters or numbers.">
+          
+              <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" required pattern="[A-Za-zÀ-ž\s]+" title="Last name should not contain special characters or numbers.">
+          
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+          
+              <label for="country" class="form-label">Country of Residence</label>
+              <select class="form-select select2" id="country" name="country" required>
+                  <option value="">Select a country</option>
+                  <!-- The option elements are populated by Select2 -->
+              </select>
+          
+              <label for="country_code" class="form-label">Country Code</label>
+              <input type="text" class="form-control" id="country_code" name="country_code" required pattern=".*[0-9]+.*" title="Country code must contain at least one number.">
+          
+              <label for="phone" class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="phone" name="phone" required pattern="\d+" title="Phone number must contain only numbers.">
+
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+          
+            <!-- Submit button -->
+            <div class="mb-3 d-grid gap-2">
+                <button type="submit" class="btn btn-danger">Register Now</button>
+            </div>
+          </form>          
+        </div>
+      </div>
+    </div>
+  </body>
+  
+  <footer class="mt-auto bg-dark text-light py-3">
+      <div class="container text-center">
+          <p>© 2024 HotForex. All rights reserved.</p>
+      </div>
+  </footer>
+{% endblock content %}
+
+
+

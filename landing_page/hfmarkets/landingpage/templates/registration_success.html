@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <header class="bg-dark py-3 text-center">
+        <div class="container">
+            <img src="{% static 'images/HFLOGO.png' %}" alt="HotForex Logo" class="img-fluid mb-4">
+        </div>
+    </header>
+    <br>
+    <br>
+    <body class="d-flex flex-column min-vh-100">
+        <div class="alert alert-success text-center" role="alert">
+            <h1 class="alert-heading">Registration Successful!</h1>
+            <p>Thank you for registering.</p>
+        </div>
+        <div class="text-center">
+            <!-- Use Django URL template tag to link back to the home page -->
+            <a href="{% url 'home' %}" class="btn btn-danger btn-lg">Go to Home Page</a>
+        </div>
+    </body>
+
+
+    <footer class="mt-auto bg-dark text-light py-3">
+        <div class="container text-center">
+            <p>© 2024 HotForex. All rights reserved.</p>
+        </div>
+    </footer>
+</html>
+{% endblock content %}
